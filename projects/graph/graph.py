@@ -13,33 +13,76 @@ class Graph:
         """
         Add a vertex to the graph.
         """
-        pass  # TODO
+        if vertex_id in self.vertices:
+            print('vertex already exists')
+        else:
+            self.vertices[vertex_id] = set()
 
     def add_edge(self, v1, v2):
         """
         Add a directed edge to the graph.
         """
-        pass  # TODO
+        if v1 in self.vertices and v2 in self.vertices:
+            self.vertices[v1].add(v2)
+        else:
+            raise IndexError('vertex does not exist')
 
     def get_neighbors(self, vertex_id):
         """
         Get all neighbors (edges) of a vertex.
         """
-        pass  # TODO
+        return self.vertices[vertex_id]
 
     def bft(self, starting_vertex):
         """
         Print each vertex in breadth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        # Create an empty queue
+        queue = Queue()
+        # Add the starting vetex_id to the queue
+        queue.enqueue(starting_vertex)
+        # Create an empty set to store visited nodes
+        visited = set()
+        #while the queue is not empty-
+        while queue.size() > 0:
+            #Dequeue the first vertex
+            first_vert = queue.dequeue()
+            # Check if it's been visited
+            # If it has NOT been visted-
+            if not first_vert in visited:
+                # Mark it as visited
+                print(first_vert)
+                visited.add(first_vert)
+                # Then add all neighbors to the back of the queue
+                for neighbor in self.get_neighbors(first_vert):
+                    queue.enqueue(neighbor)
+
 
     def dft(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        # Create an empty stack
+        stack = Stack()
+        # Push the starting vetex_id to the queue
+        stack.push(starting_vertex)
+        # Create an empty set to store visited nodes
+        visited = set()
+        #while the queue is not empty-
+        while stack.size() > 0:
+            #Pop the first vertex
+            first_vert = stack.pop()
+            # Check if it's been visited
+            # If it has NOT been visted-
+            if not first_vert in visited:
+                # Mark it as visited
+                print(first_vert)
+                visited.add(first_vert)
+                # Then add all neighbors to the back of the queue
+                for neighbor in self.get_neighbors(first_vert):
+                    stack.push(neighbor)
 
     def dft_recursive(self, starting_vertex):
         """
@@ -142,4 +185,4 @@ if __name__ == '__main__':
         [1, 2, 4, 7, 6]
     '''
     print(graph.dfs(1, 6))
-    print(graph.dfs_recursive(1, 6))
+    # print(graph.dfs_recursive(1, 6))
