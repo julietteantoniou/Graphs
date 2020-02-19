@@ -5,6 +5,19 @@ class User:
     def __init__(self, name):
         self.name = name
 
+class Stack():
+    def __init__(self):
+        self.stack = []
+    def push(self, value):
+        self.stack.append(value)
+    def pop(self):
+        if self.size() > 0:
+            return self.stack.pop()
+        else:
+            return None
+    def size(self):
+        return len(self.stack)
+
 class SocialGraph:
     def __init__(self):
         self.last_id = 0
@@ -30,6 +43,34 @@ class SocialGraph:
         self.last_id += 1  # automatically increment the ID to assign the new user
         self.users[self.last_id] = User(name)
         self.friendships[self.last_id] = set()
+
+    def get_neighbors(self, vertex_id):
+        """
+        Get all neighbors (edges) of a vertex.
+        """
+        return self.friendships[vertex_id]
+
+    def dfs(self, starting_vertex, destination_vertex):
+        """
+        Return a list containing a path from
+        starting_vertex to destination_vertex in
+        depth-first order.
+        """
+        stack = Stack()
+        stack.push([starting_vertex])
+        visited=set()
+        while stack.size() > 0:
+            current_path = stack.pop()
+            current_node = current_path[-1]
+
+            if current_node == destination_vertex:
+                return current_path
+            elif not current_node in visited:
+                visited.add(current_node)
+                for node in self.get_neighbors(current_node):
+                    path_dup = list(current_path)
+                    path_dup.append(node)
+                    stack.push(path_dup)
 
     def populate_graph(self, num_users, avg_friendships):
         """
@@ -68,6 +109,10 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+        for user in self.friendships:
+            path = self.dfs(user_id, user)
+            if path is not None:
+                visited[user] = path
         return visited
 
 # print(random.randrange(0, 5))
