@@ -8,6 +8,7 @@ class Graph:
     """Represent a graph as a dictionary of vertices mapping labels to edges."""
     def __init__(self):
         self.vertices = {}
+        self.visited = set()
 
     def add_vertex(self, vertex_id):
         """
@@ -16,7 +17,7 @@ class Graph:
         if vertex_id in self.vertices:
             print('vertex already exists')
         else:
-            self.vertices[vertex_id] = set()
+            self.vertices[vertex_id] = {'n': '?', 's': '?', 'w': '?', 'e': '?'}
 
     def add_edge(self, v1, v2):
         """
@@ -85,7 +86,7 @@ class Graph:
                 for neighbor in self.get_neighbors(first_vert):
                     stack.push(neighbor)
 
-    def dft_farthest(self, starting_vertex):
+    def dft_shortest(self, starting_vertex):
                 # Create an empty stack
         stack = Stack()
         # Push the starting vetex_id to the top of the stack
@@ -93,26 +94,43 @@ class Graph:
         # Create an empty set to store visited nodes
         visited = set()
         longest = 0
-        farthest_node = None
+        direction_list = [[]]
+        final_path= []
+        end_node = 0
+        final_directions = []
         #while the stack is not empty-
         while stack.size() > 0:
             current_path = stack.pop()
             current_node = current_path[-1]
+            
+            current_moves = direction_list.pop()
+            #last_move = current_moves[-1]
+
             if not current_node in visited:
                 visited.add(current_node)
-                print('neighbors', self.get_neighbors(current_node))
+                neighbors = self.get_neighbors(current_node)
+                # print('neighbors', neighbors)
                 for node in self.get_neighbors(current_node):
+                    # print("*****",node)
+                    # print(neighbors[node])
+                    direction_dup = list(current_moves)
+                    direction_dup.append(node)
+                    direction_list.append(direction_dup)
                     path_dup = list(current_path)
-                    path_dup.append(node)
+                    path_dup.append(neighbors[node])
                     stack.push(path_dup)
-                    print('dup', path_dup)
-                    if len(path_dup) > longest:
+
+                    # print('dup', path_dup, direction_dup)
+                    if len(path_dup) > longest and path_dup[-1] not in self.visited:
                         longest = len(path_dup)
-                        farthest_node = path_dup[-1]
-                    elif len(path_dup) == longest:
-                        if farthest_node > path_dup[-1]:
-                            farthest_node = path_dup[-1]
-        return farthest_node
+                        end_node = path_dup[-1]
+                        final_path = path_dup
+                        final_directions = direction_dup
+        print(final_path, '******')
+        for room in final_path:
+            self.visited.add(room)
+            # print('visited', self.visited)
+        return (end_node, final_path, final_directions)
 
 
     def dft_recursive(self, starting_vertex, visited=set()):

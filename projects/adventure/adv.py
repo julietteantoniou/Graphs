@@ -5,16 +5,18 @@ from world import World
 import random
 from ast import literal_eval
 
+from graph import Graph
+
 # Load world
 world = World()
 
 
 # You may uncomment the smaller graphs for development and testing purposes.
 # map_file = "maps/test_line.txt"
-# map_file = "maps/test_cross.txt"
+map_file = "maps/test_cross.txt"
 # map_file = "maps/test_loop.txt"
 # map_file = "maps/test_loop_fork.txt"
-map_file = "maps/main_maze.txt"
+# map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
 room_graph=literal_eval(open(map_file, "r").read())
@@ -29,7 +31,58 @@ player = Player(world.starting_room)
 # traversal_path = ['n', 'n']
 traversal_path = []
 
+def traverse_rooms():
 
+    graph = Graph()
+
+    for room in world.rooms:
+        graph.add_vertex(room)
+    # print("**************************", graph.vertices[400]['n'])
+
+    for room in world.rooms:
+        room_id= world.rooms[room].id
+        # exits = world.rooms[room].get_exits()
+        n_room = world.rooms[room].get_room_in_direction('n')
+        if n_room is not None:
+            n = n_room.id
+            graph.vertices[room_id]['n'] = n
+        else:
+            del graph.vertices[room_id]['n']
+        e_room = world.rooms[room].get_room_in_direction('e')
+        if e_room is not None:
+            e = e_room.id
+            graph.vertices[room_id]['e'] = e
+        else:
+            del graph.vertices[room_id]['e']
+        s_room = world.rooms[room].get_room_in_direction('s')
+        if s_room is not None:
+            s = s_room.id
+            graph.vertices[room_id]['s'] = s
+        else:
+            del graph.vertices[room_id]['s']
+        w_room = world.rooms[room].get_room_in_direction('w')
+        if w_room is not None:
+            w = w_room.id
+            graph.vertices[room_id]['w'] = w
+        else:
+            del graph.vertices[room_id]['w']
+        # graph.vertices[room_id]['n'] = n
+        # graph.vertices[room_id]['e'] = e
+        # graph.vertices[room_id]['w'] = w
+        # graph.vertices[room_id]['s'] = s
+    print(graph.vertices)
+    # print(room_graph)
+    global traversal_path
+    while len(graph.visited) < len(room_graph):
+        last_walk = graph.dft_shortest(world.starting_room.id)
+        graph.dft_shortest(last_walk[0])
+        for i in last_walk[2]:
+            traversal_path.append(i)
+    print(traversal_path)
+        
+
+
+traverse_rooms()
 
 # TRAVERSAL TEST
 visited_rooms = set()
@@ -47,16 +100,16 @@ else:
     print(f"{len(room_graph) - len(visited_rooms)} unvisited rooms")
 
 
-
+# print('rooms', world.rooms)
 #######
 # UNCOMMENT TO WALK AROUND
 #######
-player.current_room.print_room_description(player)
-while True:
-    cmds = input("-> ").lower().split(" ")
-    if cmds[0] in ["n", "s", "e", "w"]:
-        player.travel(cmds[0], True)
-    elif cmds[0] == "q":
-        break
-    else:
-        print("I did not understand that command.")
+# player.current_room.print_room_description(player)
+# while True:
+#     cmds = input("-> ").lower().split(" ")
+#     if cmds[0] in ["n", "s", "e", "w"]:
+#         player.travel(cmds[0], True)
+#     elif cmds[0] == "q":
+#         break
+#     else:
+#         print("I did not understand that command.")

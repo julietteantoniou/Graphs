@@ -5,18 +5,18 @@ class User:
     def __init__(self, name):
         self.name = name
 
-class Stack():
+class Queue():
     def __init__(self):
-        self.stack = []
-    def push(self, value):
-        self.stack.append(value)
-    def pop(self):
+        self.queue = []
+    def enqueue(self, value):
+        self.queue.append(value)
+    def dequeue(self):
         if self.size() > 0:
-            return self.stack.pop()
+            return self.queue.pop(0)
         else:
             return None
     def size(self):
-        return len(self.stack)
+        return len(self.queue)
 
 class SocialGraph:
     def __init__(self):
@@ -50,27 +50,27 @@ class SocialGraph:
         """
         return self.friendships[vertex_id]
 
-    def dfs(self, starting_vertex, destination_vertex):
-        """
-        Return a list containing a path from
-        starting_vertex to destination_vertex in
-        depth-first order.
-        """
-        stack = Stack()
-        stack.push([starting_vertex])
-        visited=set()
-        while stack.size() > 0:
-            current_path = stack.pop()
-            current_node = current_path[-1]
-
-            if current_node == destination_vertex:
-                return current_path
-            elif not current_node in visited:
-                visited.add(current_node)
-                for node in self.get_neighbors(current_node):
-                    path_dup = list(current_path)
-                    path_dup.append(node)
-                    stack.push(path_dup)
+    def bfs(self, starting_vertex, destination_vertex):
+            """
+            Return a list containing the shortest path from
+            starting_vertex to destination_vertex in
+            breath-first order.
+            """
+            queue = Queue()
+            queue.enqueue([starting_vertex])
+            visited = set()
+            while queue.size() > 0:
+                current_path = queue.dequeue()
+                current_node = current_path[-1]
+                if current_node == destination_vertex:
+                    # print(current_path)
+                    return current_path
+                elif not current_node in visited:
+                    visited.add(current_node)
+                    for v in self.get_neighbors(current_node):
+                        path_dup = list(current_path)
+                        path_dup.append(v)
+                        queue.enqueue(path_dup)
 
     def populate_graph(self, num_users, avg_friendships):
         """
@@ -110,7 +110,7 @@ class SocialGraph:
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
         for user in self.friendships:
-            path = self.dfs(user_id, user)
+            path = self.bfs(user_id, user)
             if path is not None:
                 visited[user] = path
         return visited

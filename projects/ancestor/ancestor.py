@@ -10,7 +10,7 @@ def earliest_ancestor(ancestors, starting_node):
     for pair in ancestors:
         graph.add_edge(pair[1], pair[0])
     oldest = graph.dft_farthest(starting_node)
-
+    print(graph.vertices)
     if oldest == None:
         return -1
     else:
