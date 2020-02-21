@@ -93,7 +93,7 @@ class Graph:
         stack.push([starting_vertex])
         # Create an empty set to store visited nodes
         visited = set()
-        longest = 0
+        longest = 600
         direction_list = [[]]
         final_path= []
         end_node = 0
@@ -121,7 +121,7 @@ class Graph:
                     stack.push(path_dup)
 
                     # print('dup', path_dup, direction_dup)
-                    if len(path_dup) > longest and path_dup[-1] not in self.visited:
+                    if len(path_dup) < longest and path_dup[-1] not in self.visited and path_dup[-1] not in path_dup[:-1]:
                         longest = len(path_dup)
                         end_node = path_dup[-1]
                         final_path = path_dup

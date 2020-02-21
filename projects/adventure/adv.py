@@ -13,10 +13,10 @@ world = World()
 
 # You may uncomment the smaller graphs for development and testing purposes.
 # map_file = "maps/test_line.txt"
-map_file = "maps/test_cross.txt"
+# map_file = "maps/test_cross.txt"
 # map_file = "maps/test_loop.txt"
 # map_file = "maps/test_loop_fork.txt"
-# map_file = "maps/main_maze.txt"
+map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
 room_graph=literal_eval(open(map_file, "r").read())
@@ -73,12 +73,49 @@ def traverse_rooms():
     print(graph.vertices)
     # print(room_graph)
     global traversal_path
+    current_id = world.starting_room.id
     while len(graph.visited) < len(room_graph):
-        last_walk = graph.dft_shortest(world.starting_room.id)
-        graph.dft_shortest(last_walk[0])
+        last_walk = graph.dft_shortest(current_id)
+        current_id =last_walk[0]
         for i in last_walk[2]:
             traversal_path.append(i)
     print(traversal_path)
+
+
+
+    # current_room = player.current_room
+    # for room in graph.vertices[current_room].id:
+    #     room_id= world.rooms[room].id
+    #     # exits = world.rooms[room].get_exits()
+    # if graph.vertices
+    #     n_room = world.rooms[room].get_room_in_direction('n')
+    #     if n_room is not None:
+    #         n = n_room.id
+    #         graph.vertices[room_id]['n'] = n
+    #         player.travel('n')
+    #     else:
+    #         del graph.vertices[room_id]['n']
+    #     e_room = world.rooms[room].get_room_in_direction('e')
+    #     if e_room is not None:
+    #         e = e_room.id
+    #         graph.vertices[room_id]['e'] = e
+    #     else:
+    #         del graph.vertices[room_id]['e']
+    #     s_room = world.rooms[room].get_room_in_direction('s')
+    #     if s_room is not None:
+    #         s = s_room.id
+    #         graph.vertices[room_id]['s'] = s
+    #     else:
+    #         del graph.vertices[room_id]['s']
+    #     w_room = world.rooms[room].get_room_in_direction('w')
+    #     if w_room is not None:
+    #         w = w_room.id
+    #         graph.vertices[room_id]['w'] = w
+    #     else:
+    #         del graph.vertices[room_id]['w']
+
+    # player
+
         
 
 
